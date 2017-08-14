@@ -1,0 +1,15 @@
+
+.idea/
+.idea/.name
+.idea/encodings.xml
+.idea/ezforms-server-core.iml
+.idea/jsLibraryMappings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/workspace.xml
+.idea/libraries/ezforms_server_core_node_modules.xml
+.idea/scopes/scope_settings.xml
+
+
+*.log
