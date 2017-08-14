@@ -1,6 +1,6 @@
 {
   "name": "csv-xlsx-to-json",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Single module to convert various formats of csv and xlsx to json",
   "main": "./index.js",
   "scripts": {

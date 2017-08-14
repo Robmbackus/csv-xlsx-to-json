@@ -9,14 +9,12 @@ var csvToJson = function (filePath, callback) {
 
     var csvStream = csv.createStream();
 
-    var dataSet = {
-        data: []
-    };
+    var dataSet = [];
     fs.createReadStream(filePath, {autoClose: true})
         .pipe(csvStream)
         .on('close', function (f) {
 
-            if (!dataSet.data[0].undefined) {
+            if (!dataSet[0].undefined) {
                 callback(false, dataSet);
             } else {
                 //Standard /r/n failed and is most likely mac csv and require /r
@@ -33,7 +31,7 @@ var csvToJson = function (filePath, callback) {
         })
         .on('data', function (data) {
             if (data) {
-                dataSet.data.push(data);
+                dataSet.push(data);
             }
         })
 
@@ -48,16 +46,13 @@ var csvToJsonMac = function (filePath, callback) {
     };
     var csvStream = csv.createStream(options);
 
-    var dataSet = {
-        data: [],
-        timeStamp: 0
-    };
+    var dataSet = [];
 
     fs.createReadStream(filePath, {autoClose: true})
         .pipe(csvStream)
         .on('close', function (f) {
 
-            if (!dataSet.data[0].undefined) {
+            if (!dataSet[0].undefined) {
                 callback(false, dataSet);
             } else {
                 //Still failed. Return error
@@ -70,7 +65,7 @@ var csvToJsonMac = function (filePath, callback) {
         })
         .on('data', function (data) {
             if (data) {
-                dataSet.data.push(data);
+                dataSet.push(data);
             }
         })
 };
@@ -78,10 +73,7 @@ var csvToJsonMac = function (filePath, callback) {
 var xlsxToJson = function (filePath, callback) {
 
 
-    var dataSet = {
-        data: [],
-        timeStamp: 0
-    };
+    var dataSet = [];
 
     xlsx({
         input: filePath,
@@ -90,40 +82,33 @@ var xlsxToJson = function (filePath, callback) {
         if (err) {
             callback(err, null)
         } else {
-            dataSet.data = data
+            dataSet = data
             callback(false, dataSet)
         }
     });
 
 };
 
-function SheetToJson(){
 
-}
 
-SheetToJson.prototype.process = function(filePath, callback){
+module.exports = {
+    process: function(filePath, callback){
+        var fileExtension = filePath.split('.').pop();
+        console.log(filePath)
+        switch (fileExtension) {
+            case 'csv':
 
-    var fileExtension = filePath.split('.').pop();
+                csvToJson(filePath, function (err, result) {
+                    callback(err, result);
+                });
+                break;
+            case 'xlsx':
 
-    switch (fileExtension) {
-        case 'csv':
-
-            csvToJson(filePath, function (err, result) {
-                callback(err, result);
-            });
-            break;
-        case 'xlsx':
-
-            xlsxToJson(filePath, function (err, result) {
-                callback(err, result);
-            });
-            break
+                xlsxToJson(filePath, function (err, result) {
+                    callback(err, result);
+                });
+                break
+        }
     }
-};
-
-module.exports = function(){
-
-    return new SheetToJson();
-
 };
 
